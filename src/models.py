@@ -16,25 +16,11 @@ class User(db.Model):
         return {
             "id": self.id,
             "email": self.email,
+            "password": self.password,
+            "is_active": self.is_active,
             # do not serialize the password, its a security breach
         }
 
-
-class Film(db.Model):
-    id: Mapped[int] = mapped_column(primary_key=True)
-    episode: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
-    year: Mapped[int] = mapped_column(nullable=False)
-    duration: Mapped[int] = mapped_column(nullable=False)
-
-
-    def serialize(self):
-        return {
-            "id": self.id,
-            "episode": self.episode,
-            "year": self.year,
-            "duration": self.duration,
-            # do not serialize the password, its a security breach
-        }
 
 
 class Planet(db.Model):
@@ -58,23 +44,6 @@ class Planet(db.Model):
         }
 
 
-class Vehicle(db.Model):
-    id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
-    passangers: Mapped[int] = mapped_column(nullable=False)
-    lenght: Mapped[float] = mapped_column(nullable=False)
-    favorite: Mapped[bool] = mapped_column(Boolean(), nullable=False)
-
-
-    def serialize(self):
-        return {
-            "id": self.id,
-            "name": self.name,
-            "passangers": self.passangers,
-            "lenght": self.lenght,
-            "favorite": self.favorite,
-            # do not serialize the password, its a security breach
-        }
     
 
 class Character(db.Model):
@@ -101,14 +70,15 @@ class Character(db.Model):
         }
     
 
-class Character_Vehicle(db.Model):
+
+class Favorite_Character(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
 
     id_character: Mapped[int] = mapped_column(ForeignKey("character.id"), nullable=False)
-    id_vehicle: Mapped[int] = mapped_column(ForeignKey("vehicle.id"), nullable=False)
+    id_user: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
 
     character: Mapped["Character"] = relationship("Character", foreign_keys=[id_character])
-    vehicle: Mapped["Vehicle"] = relationship("Vehicle", foreign_keys=[id_vehicle])
+    user: Mapped["User"] = relationship("User", foreign_keys=[id_user])
 
     def serialize(self):
         return {
@@ -116,16 +86,16 @@ class Character_Vehicle(db.Model):
 
             # do not serialize the password, its a security breach
         }
-    
 
-class Character_Film(db.Model):
+
+class Favorite_Planet(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
 
-    id_character: Mapped[int] = mapped_column(ForeignKey("character.id"), nullable=False)
-    id_film: Mapped[int] = mapped_column(ForeignKey("film.id"), nullable=False)
+    id_planet: Mapped[int] = mapped_column(ForeignKey("planet.id"), nullable=False)
+    id_user: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
 
-    character: Mapped["Character"] = relationship("Character", foreign_keys=[id_character])
-    film: Mapped["Film"] = relationship("Film", foreign_keys=[id_film])
+    planet: Mapped["Character"] = relationship("Planet", foreign_keys=[id_planet])
+    user: Mapped["User"] = relationship("User", foreign_keys=[id_user])
 
     def serialize(self):
         return {
